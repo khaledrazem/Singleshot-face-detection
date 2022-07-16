@@ -1,0 +1,19 @@
+function [loss,gradientsSubnet,gradientsParams] = modelLoss(net,fcParams,X1,X2,X3)
+
+% Pass the similar image pair through the network.
+Y1 = forwardSiamese(net,fcParams,X1,X2);
+Y1=Cleaneps(Y1);
+
+% Pass the image pair through the network.
+Y2 = forwardSiamese(net,fcParams,X1,X3);
+Y2=Cleaneps(Y2
+% Calculate binary cross-entropy loss.
+loss=abs(Y1 - Y2)
+loss = max([loss+0.1,0]);
+
+% Calculate gradients of the loss with respect to the network learnable
+% parameters.
+[gradientsSubnet,gradientsParams] = dlgradient(loss,net.Learnables,fcParams);
+
+end
+

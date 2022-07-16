@@ -1,0 +1,31 @@
+function [Yp,Yn] = forwardSiamese(net,fcParams,X1,X2,X3)
+% forwardSiamese accepts the network and pair of training images, and
+% returns a prediction of the probability of the pair being similar (closer
+% to 1) or dissimilar (closer to 0). Use forwardSiamese during training.
+
+% Pass the first image through the twin subnetwork
+Y1 = forward(net,X1);
+Y1 = sigmoid(Y1);
+
+% Pass the second image through the twin subnetwork
+Y2 = forward(net,X2);
+Y2 = sigmoid(Y2);
+
+% Pass the second image through the twin subnetwork
+Y3 = forward(net,X3);
+Y3 = sigmoid(Y3);
+
+
+
+% Pass the result through a fullyconnect operation
+Ya= fullyconnect(Yp,fcParams.FcWeights,fcParams.FcBias);
+Yp = fullyconnect(Yp,fcParams.FcWeights,fcParams.FcBias);
+Yn = fullyconnect(Yn,fcParams.FcWeights,fcParams.FcBias);
+
+% Subtract the feature vectors for similar
+Yp = abs(Y1 - Y2).^2;
+
+% Subtract the feature vectors for similar
+Yn = abs(Y1 - Y2).^2;
+
+end
